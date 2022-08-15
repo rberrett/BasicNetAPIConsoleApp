@@ -71,14 +71,14 @@ namespace BasicNetAPIConsoleApp
         [DllImport("Netapi32.dll", SetLastError = true)]
         private static extern int NetApiBufferFree(IntPtr Buffer);
 
-        // client code adapted from pinvoke.net example
+        // client code sourced and adapted from pinvoke.net example
         // https://www.pinvoke.net/default.aspx/netapi32.NetFileEnum
         internal static List<FILE_INFO_3> GetNetFileEnumList(string server = null)
         {
             // create a list of FILE_INFO_3 structs
             List<FILE_INFO_3> list = new List<FILE_INFO_3>();
 
-            // some locals
+            // declare some locals
             int dwReadEntries;
             int dwTotalEntries;
             IntPtr pBuffer = IntPtr.Zero;
@@ -88,6 +88,8 @@ namespace BasicNetAPIConsoleApp
             int dwStatus = NetFileEnum(server, null, null, 3, ref pBuffer, MAX_PREFERRED_LENGTH, 
                                        out dwReadEntries, out dwTotalEntries, IntPtr.Zero);
 
+            // debug print
+            Console.WriteLine($"NetFileEnum returned {dwStatus}");
             // check the return status
             if (dwStatus == 0)
             {
@@ -98,7 +100,7 @@ namespace BasicNetAPIConsoleApp
                     IntPtr iPtr = new IntPtr(pBuffer.ToInt32() + (dwIndex * Marshal.SizeOf(pCurrent)));
                     pCurrent = (FILE_INFO_3)Marshal.PtrToStructure(iPtr, typeof(FILE_INFO_3));
                     list.Add(pCurrent);
-                    // debug
+                    // debug print statements
                     Console.WriteLine("dwIndex={0}", dwIndex);
                     Console.WriteLine("    id={0}", pCurrent.fi3_id);
                     Console.WriteLine("    num_locks={0}", pCurrent.fi3_num_locks);
