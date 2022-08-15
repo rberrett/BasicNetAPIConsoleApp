@@ -68,6 +68,8 @@ namespace BasicNetAPIConsoleApp
             IntPtr resume_handle
         );
 
+        // https://docs.microsoft.com/en-us/windows/win32/api/lmapibuf/nf-lmapibuf-netapibufferfree
+        // https://www.pinvoke.net/default.aspx/netapi32.netapibufferfree
         [DllImport("Netapi32.dll", SetLastError = true)]
         private static extern int NetApiBufferFree(IntPtr Buffer);
 
