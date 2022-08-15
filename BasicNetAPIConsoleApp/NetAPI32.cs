@@ -71,20 +71,27 @@ namespace BasicNetAPIConsoleApp
         [DllImport("Netapi32.dll", SetLastError = true)]
         private static extern int NetApiBufferFree(IntPtr Buffer);
 
+        // client code adapted from pinvoke.net example
+        // https://www.pinvoke.net/default.aspx/netapi32.NetFileEnum
         internal static List<FILE_INFO_3> GetNetFileEnumList(string server = null)
         {
+            // create a list of FILE_INFO_3 structs
             List<FILE_INFO_3> list = new List<FILE_INFO_3>();
 
+            // some locals
             int dwReadEntries;
             int dwTotalEntries;
             IntPtr pBuffer = IntPtr.Zero;
             FILE_INFO_3 pCurrent = new FILE_INFO_3();
 
-            int dwStatus = NetFileEnum(null, null, null, 3, ref pBuffer, MAX_PREFERRED_LENGTH, 
+            // invoke NetFileEnum
+            int dwStatus = NetFileEnum(server, null, null, 3, ref pBuffer, MAX_PREFERRED_LENGTH, 
                                        out dwReadEntries, out dwTotalEntries, IntPtr.Zero);
 
+            // check the return status
             if (dwStatus == 0)
             {
+                // iterate over the returned entries
                 for (int dwIndex = 0; dwIndex < dwReadEntries; dwIndex++)
                 {
                     // create the struct from the buffer
@@ -99,9 +106,10 @@ namespace BasicNetAPIConsoleApp
                     Console.WriteLine("    permission={0}", pCurrent.fi3_permission);
                     Console.WriteLine("    username={0}", pCurrent.fi3_username);
                 }
-
-                NetApiBufferFree(pBuffer);
             }
+            // free up the buffer
+            NetApiBufferFree(pBuffer);
+            // return the list
             return list;
         }
 
