@@ -13,15 +13,15 @@ namespace BasicNetAPIConsoleApp
         {
             StreamWriter sw = new StreamWriter(@"C:\temp\FileAccess\leftopen.txt");
 
-            List<NetAPI32.FileInfo3> fileconnections = NetAPI32.BuildNetFileEnumList();
-            Console.WriteLine($"Num file connections = {fileconnections.Count}");
-            foreach (NetAPI32.FileInfo3 fileconnection in fileconnections)
+            List<NetAPI32.FILE_INFO_3> list = NetAPI32.GetNetFileEnumList();
+            Console.WriteLine($"Num file connections = {list.Count}");
+            foreach (NetAPI32.FILE_INFO_3 file in list)
             {
-                int remoteUserPrimition = fileconnection.Permission;
-                string remoteUsername = fileconnection.UserName;
-                string pathName = fileconnection.PathName;
-                int shareID = fileconnection.SessionID;
-                Console.WriteLine($"FileInfo3:pathName = {pathName}");
+                int id = file.fi3_id;
+                int perm = file.fi3_permission;
+                string pathname= file.fi3_pathname;
+                string username = file.fi3_username;
+                Console.WriteLine($"FILE_INFO_3:pathname = {pathname}");
             }
             Console.WriteLine("All done. Hit enter key to quit...");
             Console.ReadLine();
